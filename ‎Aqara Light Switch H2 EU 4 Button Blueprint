@@ -5,12 +5,8 @@ blueprint:
     that supports device triggers. Define actions for single press, double press, hold, and release events.
   domain: automation
   input:
-    mqtt_device:
+    device:
       name: MQTT Device
-      description: The MQTT button or switch that will trigger the actions.
-      selector:
-        device:
-          integration: mqtt
 
     # === LEFT BUTTON ACTIONS ===
     action_single_left:
