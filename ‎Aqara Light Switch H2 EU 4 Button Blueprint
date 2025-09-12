@@ -1,5 +1,5 @@
 blueprint:
-  name: MQTT - 4 Button H2 Switch Controller (Device Method)
+  name: MQTT - 4 Button H2 Switch Controller
   description: >-
     Control anything with a 4-button switch using MQTT Device Triggers.
   domain: automation
