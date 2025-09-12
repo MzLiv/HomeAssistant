@@ -1,132 +1,118 @@
 blueprint:
-  name: Zigbee2MQTT - 4 Button Switch Controller (Sensor Method)
+  name: MQTT - 4 Button H2 Switch Controller (Device Method)
   description: >-
-    Control anything with a 4-button Zigbee2MQTT switch that uses an 'action' sensor.
-    Find the 'action' sensor for your switch and assign actions for each button press.
+    Control anything with a 4-button switch using MQTT Device Triggers.
   domain: automation
   input:
-    action_sensor:
-      name: Action Sensor
-      description: >-
-        Select the sensor entity that reports the actions for your 4-button switch.
-        It usually ends with '_action'.
+    # --- The Device Selector ---
+    # This is the part we need to get right.
+    # Try with this standard version first.
+    mqtt_device:
+      name: MQTT Device
+      description: Select your 4-button switch from the list.
       selector:
-        entity:
-          domain: sensor
-          device_class: action
+        device:
+          integration: mqtt
 
-    # TOP-LEFT BUTTON (Button 1)
-    action_single_tl:
-      name: (Top-Left) Single Press
-      selector: { action: {} }
-      default: []
-    action_double_tl:
-      name: (Top-Left) Double Press
-      selector: { action: {} }
-      default: []
-    action_hold_tl:
-      name: (Top-Left) Hold
-      selector: { action: {} }
-      default: []
-    action_release_tl:
-      name: (Top-Left) Release
-      selector: { action: {} }
-      default: []
+    # --- ACTION INPUTS ---
+    # I have simplified the list to match the H2 switch's known actions.
+    # It has 4 buttons, each with single, double, and hold. Release is often part of hold.
 
-    # TOP-RIGHT BUTTON (Button 2)
-    action_single_tr:
-      name: (Top-Right) Single Press
+    # Button 1 (Top-Left)
+    action_single_1:
+      name: (Button 1) Single Press
       selector: { action: {} }
       default: []
-    action_double_tr:
-      name: (Top-Right) Double Press
+    action_double_1:
+      name: (Button 1) Double Press
       selector: { action: {} }
       default: []
-    action_hold_tr:
-      name: (Top-Right) Hold
-      selector: { action: {} }
-      default: []
-    action_release_tr:
-      name: (Top-Right) Release
+    action_hold_1:
+      name: (Button 1) Hold
       selector: { action: {} }
       default: []
 
-    # BOTTOM-LEFT BUTTON (Button 3)
-    action_single_bl:
-      name: (Bottom-Left) Single Press
+    # Button 2 (Top-Right)
+    action_single_2:
+      name: (Button 2) Single Press
       selector: { action: {} }
       default: []
-    action_double_bl:
-      name: (Bottom-Left) Double Press
+    action_double_2:
+      name: (Button 2) Double Press
       selector: { action: {} }
       default: []
-    action_hold_bl:
-      name: (Bottom-Left) Hold
-      selector: { action: {} }
-      default: []
-    action_release_bl:
-      name: (Bottom-Left) Release
+    action_hold_2:
+      name: (Button 2) Hold
       selector: { action: {} }
       default: []
 
-    # BOTTOM-RIGHT BUTTON (Button 4)
-    action_single_br:
-      name: (Bottom-Right) Single Press
+    # Button 3 (Bottom-Left)
+    action_single_3:
+      name: (Button 3) Single Press
       selector: { action: {} }
       default: []
-    action_double_br:
-      name: (Bottom-Right) Double Press
+    action_double_3:
+      name: (Button 3) Double Press
       selector: { action: {} }
       default: []
-    action_hold_br:
-      name: (Bottom-Right) Hold
+    action_hold_3:
+      name: (Button 3) Hold
       selector: { action: {} }
       default: []
-    action_release_br:
-      name: (Bottom-Right) Release
+
+    # Button 4 (Bottom-Right)
+    action_single_4:
+      name: (Button 4) Single Press
+      selector: { action: {} }
+      default: []
+    action_double_4:
+      name: (Button 4) Double Press
+      selector: { action: {} }
+      default: []
+    action_hold_4:
+      name: (Button 4) Hold
       selector: { action: {} }
       default: []
 
 mode: restart
+max_exceeded: silent
+
+# The action subtypes for this switch are often button_1_single, button_2_double, etc.
+# I have built the triggers to match that common pattern.
 trigger:
-  - platform: state
-    entity_id: !input action_sensor
+  # Button 1
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_1_single", id: single_1 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_1_double", id: double_1 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_1_hold", id: hold_1 }
+  # Button 2
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_2_single", id: single_2 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_2_double", id: double_2 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_2_hold", id: hold_2 }
+  # Button 3
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_3_single", id: single_3 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_3_double", id: double_3 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_3_hold", id: hold_3 }
+  # Button 4
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_4_single", id: single_4 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_4_double", id: double_4 }
+  - { platform: device, device_id: !input mqtt_device, domain: mqtt, type: action, subtype: "button_4_hold", id: hold_4 }
 
 action:
   - choose:
-      # Top-Left Actions
-      - conditions: "{{ trigger.to_state.state == 'single_top_left' }}"
-        sequence: !input action_single_tl
-      - conditions: "{{ trigger.to_state.state == 'double_top_left' }}"
-        sequence: !input action_double_tl
-      - conditions: "{{ trigger.to_state.state == 'hold_top_left' }}"
-        sequence: !input action_hold_tl
-      - conditions: "{{ trigger.to_state.state == 'release_top_left' }}"
-        sequence: !input action_release_tl
-      # Top-Right Actions
-      - conditions: "{{ trigger.to_state.state == 'single_top_right' }}"
-        sequence: !input action_single_tr
-      - conditions: "{{ trigger.to_state.state == 'double_top_right' }}"
-        sequence: !input action_double_tr
-      - conditions: "{{ trigger.to_state.state == 'hold_top_right' }}"
-        sequence: !input action_hold_tr
-      - conditions: "{{ trigger.to_state.state == 'release_top_right' }}"
-        sequence: !input action_release_tr
-      # Bottom-Left Actions
-      - conditions: "{{ trigger.to_state.state == 'single_bottom_left' }}"
-        sequence: !input action_single_bl
-      - conditions: "{{ trigger.to_state.state == 'double_bottom_left' }}"
-        sequence: !input action_double_bl
-      - conditions: "{{ trigger.to_state.state == 'hold_bottom_left' }}"
-        sequence: !input action_hold_bl
-      - conditions: "{{ trigger.to_state.state == 'release_bottom_left' }}"
-        sequence: !input action_release_bl
-      # Bottom-Right Actions
-      - conditions: "{{ trigger.to_state.state == 'single_bottom_right' }}"
-        sequence: !input action_single_br
-      - conditions: "{{ trigger.to_state.state == 'double_bottom_right' }}"
-        sequence: !input action_double_br
-      - conditions: "{{ trigger.to_state.state == 'hold_bottom_right' }}"
-        sequence: !input action_hold_br
-      - conditions: "{{ trigger.to_state.state == 'release_bottom_right' }}"
-        sequence: !input action_release_br
+      # Button 1
+      - conditions: "{{ trigger.id == 'single_1' }}", sequence: !input action_single_1
+      - conditions: "{{ trigger.id == 'double_1' }}", sequence: !input action_double_1
+      - conditions: "{{ trigger.id == 'hold_1' }}", sequence: !input action_hold_1
+      # Button 2
+      - conditions: "{{ trigger.id == 'single_2' }}", sequence: !input action_single_2
+      - conditions: "{{ trigger.id == 'double_2' }}", sequence: !input action_double_2
+      - conditions: "{{ trigger.id == 'hold_2' }}", sequence: !input action_hold_2
+      # Button 3
+      - conditions: "{{ trigger.id == 'single_3' }}", sequence: !input action_single_3
+      - conditions: "{{ trigger.id == 'double_3' }}", sequence: !input action_double_3
+      - conditions: "{{ trigger.id == 'hold_3' }}", sequence: !input action_hold_3
+      # Button 4
+      - conditions: "{{ trigger.id == 'single_4' }}", sequence: !input action_single_4
+      - conditions: "{{ trigger.id == 'double_4' }}", sequence: !input action_double_4
+      - conditions: "{{ trigger.id == 'hold_4' }}", sequence: !input action_hold_4
+
