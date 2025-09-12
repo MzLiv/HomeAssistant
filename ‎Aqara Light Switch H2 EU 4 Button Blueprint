@@ -5,11 +5,17 @@ blueprint:
     Use this if your MQTT device doesn't appear in the Device list or if its triggers aren't detected.
   domain: automation
   input:
-    mqtt_topic:
-      name: MQTT Action Topic
-      description: "The MQTT topic to listen to. For Zigbee2MQTT, this is usually 'zigbee2mqtt/YOUR_DEVICE_NAME/action'."
+    mqtt_device:
+      name: MQTT Device
+      description: The MQTT button or switch device that will trigger the action.
       selector:
-        text:
+        device:
+          integration: mqtt
+    action_to_run:
+      name: Action
+      description: The action to run when the button is pressed.
+      selector:
+        action:
 
     # === LEFT BUTTON ACTIONS ===
     action_single_left:
