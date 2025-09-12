@@ -1,0 +1,198 @@
+blueprint:
+  name: MQTT - Advanced Button Controller
+  description: >-
+    Create a comprehensive set of automations for a multi-action MQTT device.
+    Define actions for single press, double press, hold, and release events.
+    Only the actions you define will be used.
+  domain: automation
+  input:
+    mqtt_device:
+      name: MQTT Device
+      description: The MQTT button or switch device that will trigger the actions.
+      selector:
+        device:
+          integration: mqtt
+
+    # === LEFT BUTTON ACTIONS ===
+    action_single_left:
+      name: (Left) Single Press
+      description: Action to run on a single press of the left button.
+      selector:
+        action:
+      default: []
+
+    action_single_left_down:
+      name: (Left) Single Press Down
+      description: Action to run for the 'single_left_down' event.
+      selector:
+        action:
+      default: []
+
+    action_double_left_down:
+      name: (Left) Double Press Down
+      description: Action to run on a double press of the left button.
+      selector:
+        action:
+      default: []
+
+    action_hold_left_down:
+      name: (Left) Hold
+      description: Action to run when the left button is held down.
+      selector:
+        action:
+      default: []
+
+    action_release_left_down:
+      name: (Left) Release
+      description: Action to run when the left button is released after a hold.
+      selector:
+        action:
+      default: []
+
+    # === RIGHT BUTTON ACTIONS ===
+    action_single_right:
+      name: (Right) Single Press
+      description: Action to run on a single press of the right button.
+      selector:
+        action:
+      default: []
+
+    action_single_right_down:
+      name: (Right) Single Press Down
+      description: Action to run for the 'single_right_down' event.
+      selector:
+        action:
+      default: []
+
+    action_double_right_down:
+      name: (Right) Double Press Down
+      description: Action to run on a double press of the right button.
+      selector:
+        action:
+      default: []
+
+    action_hold_right_down:
+      name: (Right) Hold
+      description: Action to run when the right button is held down.
+      selector:
+        action:
+      default: []
+
+    action_release_right_down:
+      name: (Right) Release
+      description: Action to run when the right button is released after a hold.
+      selector:
+        action:
+      default: []
+
+# 'restart' mode ensures that if you press another button, the new action
+# will start immediately. This is ideal for handling hold/release events.
+mode: restart
+
+trigger:
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: single_left
+    id: single_left
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: single_right
+    id: single_right
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: single_left_down
+    id: single_left_down
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: single_right_down
+    id: single_right_down
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: double_left_down
+    id: double_left_down
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: double_right_down
+    id: double_right_down
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: hold_left_down
+    id: hold_left
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: hold_right_down
+    id: hold_right
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: release_left_down
+    id: release_left
+  - platform: device
+    device_id: !input mqtt_device
+    domain: mqtt
+    type: action
+    subtype: release_right_down
+    id: release_right
+
+action:
+  - choose:
+      # Single Presses
+      - conditions:
+          - condition: trigger
+            id: single_left
+        sequence: !input action_single_left
+      - conditions:
+          - condition: trigger
+            id: single_right
+        sequence: !input action_single_right
+      - conditions:
+          - condition: trigger
+            id: single_left_down
+        sequence: !input action_single_left_down
+      - conditions:
+          - condition: trigger
+            id: single_right_down
+        sequence: !input action_single_right_down
+      # Double Presses
+      - conditions:
+          - condition: trigger
+            id: double_left_down
+        sequence: !input action_double_left_down
+      - conditions:
+          - condition: trigger
+            id: double_right_down
+        sequence: !input action_double_right_down
+      # Hold & Release
+      - conditions:
+          - condition: trigger
+            id: hold_left
+        sequence: !input action_hold_left_down
+      - conditions:
+          - condition: trigger
+            id: hold_right
+        sequence: !input action_hold_right_down
+      - conditions:
+          - condition: trigger
+            id: release_left
+        sequence: !input action_release_left_down
+      - conditions:
+          - condition: trigger
+            id: release_right
+        sequence: !input action_release_right_down
