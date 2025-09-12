@@ -15,54 +15,44 @@ blueprint:
     # === LEFT BUTTON ACTIONS ===
     action_single_left:
       name: (Left) Single Press
-      description: Action to run on a single press of the left button.
       selector: { action: {} }
       default: []
     action_single_left_down:
       name: (Left) Single Press Down
-      description: Action to run for the 'single_left_down' event.
       selector: { action: {} }
       default: []
     action_double_left_down:
       name: (Left) Double Press Down
-      description: Action to run on a double press of the left button.
       selector: { action: {} }
       default: []
     action_hold_left_down:
       name: (Left) Hold
-      description: Action to run when the left button is held down.
       selector: { action: {} }
       default: []
     action_release_left_down:
       name: (Left) Release
-      description: Action to run when the left button is released after a hold.
       selector: { action: {} }
       default: []
 
     # === RIGHT BUTTON ACTIONS ===
     action_single_right:
       name: (Right) Single Press
-      description: Action to run on a single press of the right button.
       selector: { action: {} }
       default: []
     action_single_right_down:
       name: (Right) Single Press Down
-      description: Action to run for the 'single_right_down' event.
       selector: { action: {} }
       default: []
     action_double_right_down:
       name: (Right) Double Press Down
-      description: Action to run on a double press of the right button.
       selector: { action: {} }
       default: []
     action_hold_right_down:
       name: (Right) Hold
-      description: Action to run when the right button is held down.
       selector: { action: {} }
       default: []
     action_release_right_down:
       name: (Right) Release
-      description: Action to run when the right button is released after a hold.
       selector: { action: {} }
       default: []
 
@@ -133,22 +123,3 @@ trigger:
 action:
   - choose:
       - conditions: "{{ trigger.id == 'single_left' }}"
-        sequence: !input action_single_left
-      - conditions: "{{ trigger.id == 'single_right' }}"
-        sequence: !input action_single_right
-      - conditions: "{{ trigger.id == 'single_left_down' }}"
-        sequence: !input action_single_left_down
-      - conditions: "{{ trigger.id == 'single_right_down' }}"
-        sequence: !input action_single_right_down
-      - conditions: "{{ trigger.id == 'double_left_down' }}"
-        sequence: !input action_double_left_down
-      - conditions: "{{ trigger.id == 'double_right_down' }}"
-        sequence: !input action_double_right_down
-      - conditions: "{{ trigger.id == 'hold_left' }}"
-        sequence: !input action_hold_left_down
-      - conditions: "{{ trigger.id == 'hold_right' }}"
-        sequence: !input action_hold_right_down
-      - conditions: "{{ trigger.id == 'release_left' }}"
-        sequence: !input action_release_left_down
-      - conditions: "{{ trigger.id == 'release_right' }}"
-        sequence: !input action_release_right_down
