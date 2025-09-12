@@ -4,4 +4,3 @@ blueprint:
   domain: automation
   input:
     device:
-      name: MQTT Device
