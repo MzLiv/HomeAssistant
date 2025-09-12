@@ -1,6 +1,132 @@
 blueprint:
-  name: Aqara H2 EU 4 Button Switch
-  description: A blueprint to set up all actions on an Aqara H2 EU 4 Button Switch 
+  name: Zigbee2MQTT - 4 Button Switch Controller (Sensor Method)
+  description: >-
+    Control anything with a 4-button Zigbee2MQTT switch that uses an 'action' sensor.
+    Find the 'action' sensor for your switch and assign actions for each button press.
   domain: automation
   input:
-    device:
+    action_sensor:
+      name: Action Sensor
+      description: >-
+        Select the sensor entity that reports the actions for your 4-button switch.
+        It usually ends with '_action'.
+      selector:
+        entity:
+          domain: sensor
+          device_class: action
+
+    # TOP-LEFT BUTTON (Button 1)
+    action_single_tl:
+      name: (Top-Left) Single Press
+      selector: { action: {} }
+      default: []
+    action_double_tl:
+      name: (Top-Left) Double Press
+      selector: { action: {} }
+      default: []
+    action_hold_tl:
+      name: (Top-Left) Hold
+      selector: { action: {} }
+      default: []
+    action_release_tl:
+      name: (Top-Left) Release
+      selector: { action: {} }
+      default: []
+
+    # TOP-RIGHT BUTTON (Button 2)
+    action_single_tr:
+      name: (Top-Right) Single Press
+      selector: { action: {} }
+      default: []
+    action_double_tr:
+      name: (Top-Right) Double Press
+      selector: { action: {} }
+      default: []
+    action_hold_tr:
+      name: (Top-Right) Hold
+      selector: { action: {} }
+      default: []
+    action_release_tr:
+      name: (Top-Right) Release
+      selector: { action: {} }
+      default: []
+
+    # BOTTOM-LEFT BUTTON (Button 3)
+    action_single_bl:
+      name: (Bottom-Left) Single Press
+      selector: { action: {} }
+      default: []
+    action_double_bl:
+      name: (Bottom-Left) Double Press
+      selector: { action: {} }
+      default: []
+    action_hold_bl:
+      name: (Bottom-Left) Hold
+      selector: { action: {} }
+      default: []
+    action_release_bl:
+      name: (Bottom-Left) Release
+      selector: { action: {} }
+      default: []
+
+    # BOTTOM-RIGHT BUTTON (Button 4)
+    action_single_br:
+      name: (Bottom-Right) Single Press
+      selector: { action: {} }
+      default: []
+    action_double_br:
+      name: (Bottom-Right) Double Press
+      selector: { action: {} }
+      default: []
+    action_hold_br:
+      name: (Bottom-Right) Hold
+      selector: { action: {} }
+      default: []
+    action_release_br:
+      name: (Bottom-Right) Release
+      selector: { action: {} }
+      default: []
+
+mode: restart
+trigger:
+  - platform: state
+    entity_id: !input action_sensor
+
+action:
+  - choose:
+      # Top-Left Actions
+      - conditions: "{{ trigger.to_state.state == 'single_top_left' }}"
+        sequence: !input action_single_tl
+      - conditions: "{{ trigger.to_state.state == 'double_top_left' }}"
+        sequence: !input action_double_tl
+      - conditions: "{{ trigger.to_state.state == 'hold_top_left' }}"
+        sequence: !input action_hold_tl
+      - conditions: "{{ trigger.to_state.state == 'release_top_left' }}"
+        sequence: !input action_release_tl
+      # Top-Right Actions
+      - conditions: "{{ trigger.to_state.state == 'single_top_right' }}"
+        sequence: !input action_single_tr
+      - conditions: "{{ trigger.to_state.state == 'double_top_right' }}"
+        sequence: !input action_double_tr
+      - conditions: "{{ trigger.to_state.state == 'hold_top_right' }}"
+        sequence: !input action_hold_tr
+      - conditions: "{{ trigger.to_state.state == 'release_top_right' }}"
+        sequence: !input action_release_tr
+      # Bottom-Left Actions
+      - conditions: "{{ trigger.to_state.state == 'single_bottom_left' }}"
+        sequence: !input action_single_bl
+      - conditions: "{{ trigger.to_state.state == 'double_bottom_left' }}"
+        sequence: !input action_double_bl
+      - conditions: "{{ trigger.to_state.state == 'hold_bottom_left' }}"
+        sequence: !input action_hold_bl
+      - conditions: "{{ trigger.to_state.state == 'release_bottom_left' }}"
+        sequence: !input action_release_bl
+      # Bottom-Right Actions
+      - conditions: "{{ trigger.to_state.state == 'single_bottom_right' }}"
+        sequence: !input action_single_br
+      - conditions: "{{ trigger.to_state.state == 'double_bottom_right' }}"
+        sequence: !input action_double_br
+      - conditions: "{{ trigger.to_state.state == 'hold_bottom_right' }}"
+        sequence: !input action_hold_br
+      - conditions: "{{ trigger.to_state.state == 'release_bottom_right' }}"
+        sequence: !input action_release_br
