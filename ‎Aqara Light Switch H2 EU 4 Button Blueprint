@@ -1,198 +1,96 @@
 blueprint:
-  name: MQTT - Advanced Button Controller
+  name: MQTT - Topic-Based Advanced Button Controller
   description: >-
-    Create a comprehensive set of automations for a multi-action MQTT device.
-    Define actions for single press, double press, hold, and release events.
-    Only the actions you define will be used.
+    Triggers actions based on the payload of a specific MQTT topic.
+    Use this if your MQTT device doesn't appear in the Device list or if its triggers aren't detected.
   domain: automation
   input:
-    mqtt_device:
-      name: MQTT Device
-      description: The MQTT button or switch device that will trigger the actions.
+    mqtt_topic:
+      name: MQTT Action Topic
+      description: "The MQTT topic to listen to. For Zigbee2MQTT, this is usually 'zigbee2mqtt/YOUR_DEVICE_NAME/action'."
       selector:
-        device:
-          integration: mqtt
+        text:
 
     # === LEFT BUTTON ACTIONS ===
     action_single_left:
       name: (Left) Single Press
-      description: Action to run on a single press of the left button.
-      selector:
-        action:
+      description: Action to run when payload is 'single_left'.
+      selector: { action: {} }
       default: []
-
     action_single_left_down:
       name: (Left) Single Press Down
-      description: Action to run for the 'single_left_down' event.
-      selector:
-        action:
+      description: Action to run when payload is 'single_left_down'.
+      selector: { action: {} }
       default: []
-
     action_double_left_down:
       name: (Left) Double Press Down
-      description: Action to run on a double press of the left button.
-      selector:
-        action:
+      description: Action to run when payload is 'double_left_down'.
+      selector: { action: {} }
       default: []
-
     action_hold_left_down:
       name: (Left) Hold
-      description: Action to run when the left button is held down.
-      selector:
-        action:
+      description: Action to run when payload is 'hold_left_down'.
+      selector: { action: {} }
       default: []
-
     action_release_left_down:
       name: (Left) Release
-      description: Action to run when the left button is released after a hold.
-      selector:
-        action:
+      description: Action to run when payload is 'release_left_down'.
+      selector: { action: {} }
       default: []
 
     # === RIGHT BUTTON ACTIONS ===
     action_single_right:
       name: (Right) Single Press
-      description: Action to run on a single press of the right button.
-      selector:
-        action:
+      description: Action to run when payload is 'single_right'.
+      selector: { action: {} }
       default: []
-
     action_single_right_down:
       name: (Right) Single Press Down
-      description: Action to run for the 'single_right_down' event.
-      selector:
-        action:
+      description: Action to run when payload is 'single_right_down'.
+      selector: { action: {} }
       default: []
-
     action_double_right_down:
       name: (Right) Double Press Down
-      description: Action to run on a double press of the right button.
-      selector:
-        action:
+      description: Action to run when payload is 'double_right_down'.
+      selector: { action: {} }
       default: []
-
     action_hold_right_down:
       name: (Right) Hold
-      description: Action to run when the right button is held down.
-      selector:
-        action:
+      description: Action to run when payload is 'hold_right_down'.
+      selector: { action: {} }
       default: []
-
     action_release_right_down:
       name: (Right) Release
-      description: Action to run when the right button is released after a hold.
-      selector:
-        action:
+      description: Action to run when payload is 'release_right_down'.
+      selector: { action: {} }
       default: []
 
-# 'restart' mode ensures that if you press another button, the new action
-# will start immediately. This is ideal for handling hold/release events.
 mode: restart
 
 trigger:
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: single_left
-    id: single_left
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: single_right
-    id: single_right
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: single_left_down
-    id: single_left_down
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: single_right_down
-    id: single_right_down
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: double_left_down
-    id: double_left_down
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: double_right_down
-    id: double_right_down
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: hold_left_down
-    id: hold_left
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: hold_right_down
-    id: hold_right
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: release_left_down
-    id: release_left
-  - platform: device
-    device_id: !input mqtt_device
-    domain: mqtt
-    type: action
-    subtype: release_right_down
-    id: release_right
+  - platform: mqtt
+    topic: !input mqtt_topic
 
 action:
   - choose:
-      # Single Presses
-      - conditions:
-          - condition: trigger
-            id: single_left
+      # We check the trigger's payload for the action name
+      - conditions: "{{ trigger.payload == 'single_left' }}"
         sequence: !input action_single_left
-      - conditions:
-          - condition: trigger
-            id: single_right
+      - conditions: "{{ trigger.payload == 'single_right' }}"
         sequence: !input action_single_right
-      - conditions:
-          - condition: trigger
-            id: single_left_down
+      - conditions: "{{ trigger.payload == 'single_left_down' }}"
         sequence: !input action_single_left_down
-      - conditions:
-          - condition: trigger
-            id: single_right_down
+      - conditions: "{{ trigger.payload == 'single_right_down' }}"
         sequence: !input action_single_right_down
-      # Double Presses
-      - conditions:
-          - condition: trigger
-            id: double_left_down
+      - conditions: "{{ trigger.payload == 'double_left_down' }}"
         sequence: !input action_double_left_down
-      - conditions:
-          - condition: trigger
-            id: double_right_down
+      - conditions: "{{ trigger.payload == 'double_right_down' }}"
         sequence: !input action_double_right_down
-      # Hold & Release
-      - conditions:
-          - condition: trigger
-            id: hold_left
+      - conditions: "{{ trigger.payload == 'hold_left_down' }}"
         sequence: !input action_hold_left_down
-      - conditions:
-          - condition: trigger
-            id: hold_right
+      - conditions: "{{ trigger.payload == 'hold_right_down' }}"
         sequence: !input action_hold_right_down
-      - conditions:
-          - condition: trigger
-            id: release_left
+      - conditions: "{{ trigger.payload == 'release_left_down' }}"
         sequence: !input action_release_left_down
-      - conditions:
-          - condition: trigger
-            id: release_right
+      - conditions: "{{ trigger.payload == 'release_right_down' }}"
         sequence: !input action_release_right_down
