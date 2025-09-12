@@ -7,7 +7,7 @@ blueprint:
     # --- The Device Selector ---
     # This is the part we need to get right.
     # Try with this standard version first.
-    mqtt_device:
+    device:
       name: MQTT Device
       description: Select your 4-button switch from the list.
       selector:
